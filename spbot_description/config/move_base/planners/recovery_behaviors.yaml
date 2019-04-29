@@ -1,0 +1,22 @@
+recovery_behavior_enabled: true
+recovery_behaviors:
+  - name: 'conservative_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'aggressive_reset'
+    type: 'clear_costmap_recovery/ClearCostmapRecovery'
+  - name: 'rotate_recovery_1'
+    type: 'rotate_recovery/RotateRecovery'
+  # - name: 'stepback_and_steerturn_recovery'
+  #   type: 'stepback_and_steerturn_recovery/StepbackAndSteerturnRecovery'
+
+conservative_reset:
+  reset_distance: 2.0
+
+aggressive_reset:
+  reset_distance: 1.0
+
+rotate_recovery_1:
+  sim_granularity: 0.17
+
+# stepback_and_steerturn_recovery:
+#   linear_vel_back: -0.1

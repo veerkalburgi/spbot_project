@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/> -->
+    <arg name="gazebo"  default="false"/>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <!-- COST MAP -->
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/costmap_common_params_rtabmap.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/costmap_common_params_rtabmap.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/local_costmap_params_rtabmap.yaml"  command="load" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/global_costmap_params_rtabmap.yaml" command="load" />
+
+        <!-- BASE GLOBAL PLANNER -->
+	    <rosparam file="$(find spbot_description)/config/move_base/planners/global/navfn_planner.yaml" command="load" />
+	    <!-- BASE LOCAL PLANNER -->
+	    <rosparam file="$(find spbot_description)/config/move_base/planners/local/teb_local_planner.yaml" command="load" />
+	    <!-- RECOVERY -->
+        <rosparam file="$(find spbot_description)/config/move_base/planners/recovery_behaviors.yaml" command="load"/>
+
+        <param name="controller_frequency"      value="5.0" />
+        <!-- <param name="controller_patience"       value="15.0" /> -->
+        <!-- <param name="max_planning_retries"      value="10" /> -->
+        <param name="oscillation_timeout"       value="10.0" />
+        <param name="clearing_rotation_allowed" value="true" />
+
+        <remap if="$(arg gazebo)" from="cmd_vel" to="/cmd_vel"/>
+    </node>
+
+    <node pkg="spbot_description" type="move_base_simple_navigation" name="move_base_simple_navigation" output="screen"/>
+</launch>

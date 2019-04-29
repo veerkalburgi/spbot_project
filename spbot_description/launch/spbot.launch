@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+  <arg name="rvizconfig" default="$(find spbot_description)/rviz/urdf.rviz"/>
+
+  <arg name="paused" default="false"/>
+  <arg name="use_sim_time" default="true"/>
+  <arg name="gui" default="true"/>
+  <arg name="headless" default="false"/>
+  <arg name="debug" default="false"/>
+  <arg name="sdf_robot_file" value="$(find spbot_description)/urdf/spbot.sdf"/>
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+  <param name="robot_description" command="$(find xacro)/xacro.py $(find spbot_description)/urdf/spbot.urdf.xacro" />
+  <param name="use_gui" value="True"/>
+
+<!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+  <rosparam file="$(find spbot_description)/include/spbot.yaml" command="load"/>
+  <!--rosparam file="$(find spbot_description)/include/elevator_control.yaml" command="load"/-->
+
+
+<!--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+  <arg name="world_name" value="$(find spbot_description)/worlds/elevator.world"/>
+  
+  </include>
+<!--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" output="screen"  args="-param robot_description -urdf -model spbot"/>
+<!--Elevator_gazebo_ros plugin -->
+  <!--node name="elevator_control_spawner" pkg="controller_manager" type="spawner" respawn="false"
+  output="screen" args="elevatorcab_joint_position_controller doorleft_joint_position_controller doorright_joint_position_controller floorextension_joint_position_controller joint_state_controller"/-->
+
+
+
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(arg rvizconfig)" required="true"/>
+
+
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="true" output="screen" ns="/spbot" args="joint_state_controller"/>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" respawn="false" output="screen">
+   <remap from="/joint_states" to="/spbot/joint_states"/>
+  </node>
+
+</launch>

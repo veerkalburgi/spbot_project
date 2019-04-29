@@ -1,0 +1,328 @@
+<?xml version='1.0'?>
+
+<robot name="spbot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!--/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+<!--xacro parameters-->
+<!--differential_drive parameters-->
+<xacro:property name="update_rate" value="20"/>
+<xacro:property name="torque" value="20"/>
+<!--chassis parameters-->
+<xacro:property name="chassis_mass" value="8.0"/>
+<!--left_free_wheel parameters-->
+<xacro:property name="l_f_wheel_mass" value="0.8"/>
+<!--right_free_wheel parameters-->
+<xacro:property name="r_f_wheel_mass" value="0.8"/>
+<!--left_wheel parameters-->
+<xacro:property name="l_wheel_mass" value="1.0"/>
+<!--right_wheel parameters-->
+<xacro:property name="r_wheel_mass" value="1.0"/>
+
+
+
+
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
+
+<!--link name="base_footprint">
+</link-->
+
+<link name='chassis'>
+  <!--pose> 0 0 0.2 0 0 0</pose-->
+
+  <inertial>
+    <mass value="${chassis_mass}"/>
+    <origin xyz="0.0 0.0 0.2" rpy="0 0 0"/>
+    <inertia
+      ixx="0.08" ixy="0" ixz="0"
+      iyy="0.08" iyz="0"
+      izz="0.08"
+      />
+    </inertial>
+    <collision name="collision">
+      <geometry>
+        <box size="0.8 .5 .22"/>
+      </geometry>
+    </collision>
+
+    <visual name="visual">
+      <origin xyz="0 0 0.1" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.8 .5 .22"/>
+      </geometry>
+    </visual>
+  </link>
+
+
+<!--left_free_wheel_link-->
+ <link name="left_free_wheel">
+
+       <collision name="collision">
+         <origin xyz="0.9 0.1 -0.6" rpy="0 0 0"/>
+         <geometry>
+           <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/free_wheel.dae"/>
+         </geometry>
+       </collision>
+       <visual name="visual">
+         <origin xyz="0.9 0.1 -0.6" rpy="0 0 0"/>
+         <geometry>
+           <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/free_wheel.dae"/>
+         </geometry>
+       </visual>
+       <inertial>
+          <origin xyz="0.9 0.1 -0.6" rpy="0 -0 0"/>
+            <mass value="${l_f_wheel_mass}"/>
+            <inertia
+              ixx= "0.04" ixy="0" ixz="0"
+              iyy="0.04" iyz="0"
+              izz="0.04"/>
+            </inertial>
+     </link>
+     <!--right_free_wheel_link-->
+     <link name="right_free_wheel">
+
+           <collision name="collision">
+             <origin xyz="0.9 -0.1 -0.6" rpy="0 0 0"/>
+             <geometry>
+               <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/free_wheel.dae"/>
+             </geometry>
+           </collision>
+           <visual name="visual">
+             <origin xyz="0.9 -0.1 -0.6" rpy="0 0 0"/>
+             <geometry>
+               <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/free_wheel.dae"/>
+             </geometry>
+           </visual>
+           <inertial>
+              <origin xyz="0.9 -0.1 -0.6" rpy="0 -0 0"/>
+                <mass value="${r_f_wheel_mass}"/>
+                <inertia
+                  ixx= "0.04" ixy="0" ixz="0"
+                  iyy="0.04" iyz="0"
+                  izz="0.04"/>
+                </inertial>
+         </link>
+
+    <!--left_wheel-->
+    <link name="left_wheel">
+   <collision name="collision">
+     <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+     <geometry>
+       <cylinder radius="0.2" length="0.05"/>
+     </geometry>
+   </collision>
+   <visual name="left_wheel_visual">
+     <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+     <geometry>
+       <cylinder radius="0.2" length="0.05"/>
+     </geometry>
+   </visual>
+   <inertial>
+     <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+     <mass value="${l_wheel_mass}"/>
+     <inertia
+       ixx=".1" ixy="0.0" ixz="0.0"
+       iyy=".1" iyz="0.0"
+       izz=".1"/>
+     </inertial>
+   </link>
+   <!--right_wheel-->
+   <link name="right_wheel">
+     <collision name="collision">
+       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+       <geometry>
+         <cylinder radius="0.2" length="0.05"/>
+       </geometry>
+     </collision>
+     <visual name="right_wheel_visual">
+       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+       <geometry>
+         <cylinder radius="0.2" length="0.05"/>
+       </geometry>
+     </visual>
+     <inertial>
+       <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+       <mass value="${r_wheel_mass}"/>
+       <inertia
+         ixx=".1" ixy="0.0" ixz="0.0"
+         iyy=".1" iyz="0.0"
+         izz=".1"/>
+       </inertial>
+     </link>
+
+     <!--sensor_link-->
+     <link name="hokuyo_link">
+        <collision>
+          <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <!--mesh filename="package://ros_whill/meshes/hokuyo.dae"/-->
+          <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/hokuyo.dae"/>
+        </geometry>
+        </collision>
+
+
+
+         <visual>
+             <origin xyz="0 0 0" rpy="0 0 0"/>
+             <geometry>
+                 <!--mesh filename="package://ros_whill/meshes/hokuyo.dae"/-->
+                 <mesh filename="file:///home/rit/catkin_ws2/src/spbot/spbot_description/meshes/hokuyo.dae"/>
+             </geometry>
+         </visual>
+
+         <inertial>
+             <mass value="1e-5" />
+             <origin xyz="0 0 0" rpy="0 0 0"/>
+             <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6" />
+         </inertial>
+     </link>
+<!--new added base_footprint-->
+     <!--joint name="base_joint" type="fixed">
+         <parent link="base_footprint" />
+         <child link="chassis" />
+         <origin xyz="0 0 0.1325" rpy="0 0 0"/>
+     </joint-->
+     <joint name="hokuyo_joint" type="fixed">
+        <origin xyz="0.38 0 0.0" rpy="0 0 0"/>
+         <parent link="chassis"/>
+         <child link="hokuyo_link"/>
+         <axis xyz="0 1 0" rpy="0 0 0"/>
+     </joint>
+ <!--left_wheel_joint-->
+   <joint type="continuous" name="wheel_left_joint">
+        <origin xyz="0.18 0.26 0.08" rpy="0 0 0"/>
+        <child link="left_wheel"/>
+        <parent link="chassis"/>
+        <axis xyz="0 1 0" rpy="0 0 0"/>
+        <limit effort="10000" velocity="1000"/>
+        <joint_properties damping="1.0" friction="1.0"/>
+   </joint>
+<!--right_wheel_joint-->
+   <joint type="continuous" name="wheel_right_joint">
+       <origin xyz="0.18 -0.26 0.08" rpy="0 0 0"/>
+       <child link="right_wheel"/>
+       <parent link="chassis"/>
+       <axis xyz="0 1 0" rpy="0 0 0"/>
+       <limit effort="10000" velocity="1000"/>
+       <joint_properties damping="1.0" friction="1.0"/>
+     </joint>
+<!--left_free_wheel_hinge-->
+     <joint type="fixed" name="left_free_wheel_hinge">
+       <origin xyz="0.0 0.1 0.3" rpy="0 0 0"/>
+       <child link="left_free_wheel"/>
+       <parent link="chassis"/>
+       <axis xyz="0 1 0" rpy="0 0 0"/>
+       <limit effort="10000" velocity="1000"/>
+       <joint_properties damping="1.0" friction="1.0"/>
+     </joint>
+<!--right_free_wheel hinge-->
+     <joint type="fixed" name="right_free_wheel_hinge">
+       <origin xyz="0.0 -0.1 0.3" rpy="0 0 0"/>
+       <child link="right_free_wheel"/>
+       <parent link="chassis"/>
+       <axis xyz="0 1 0" rpy="0 0 0"/>
+       <limit effort="10000" velocity="1000"/>
+       <joint_properties damping="1.0" friction="1.0"/>
+     </joint>
+<!--###################################################################################################-->
+<!--###################SENSORS##########################-->
+<!--##################################################################################################-->
+<!--### Laser_sensor ###-->
+<!--xacro:arg name="gazebo" default="false"/-->
+<!--xacro:property name="gazebo" value="$(arg gazebo)"/-->
+
+<!-- Import macro for hokuyo -->
+<!--xacro:include filename="$(find spbot_description)/urdf/hokuyo.macro.xacro"/-->
+<!-- Create hokuyo instance -->
+<!--xacro:if value="${gazebo}">
+    <xacro:hokuyo parent="chassis">
+        <origin xyz="0.65 0 1.0" rpy="0 0 0"/>
+    </xacro:hokuyo>
+</xacro:if-->
+
+<!--###########################################################################################-->
+<gazebo reference="chassis">
+  <sensor name="chassis_contact_sensor" type="contact">
+    <always_on>true</always_on>
+    <update_rate>15.0</update_rate>
+    <contact>
+      <collision>chassis_fixed_joint_lump__collision_collision</collision>
+    </contact>
+    <plugin filename="libgazebo_ros_bumper.so" name="gazebo_ros_bumper_controller">
+      <bumperTopicName>chassis_contact_info</bumperTopicName>
+      <frameName>chassis</frameName>
+    </plugin>
+  </sensor>
+</gazebo>
+     <!--gazebo-ros plugin differential drive-->
+   <gazebo>
+     <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+        <robotNamespace>/spbot</robotNamespace>
+     </plugin>
+
+
+
+     <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+
+        <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>${update_rate}</updateRate>
+        <leftJoint>wheel_left_joint</leftJoint>
+        <rightJoint>wheel_right_joint</rightJoint>
+        <wheelSeparation>0.5380</wheelSeparation>
+        <wheelDiameter>0.2410</wheelDiameter>
+        <torque>${torque}</torque>
+        <commandTopic>cmd_vel</commandTopic>
+        <odometryTopic>odom</odometryTopic>
+        <odometryFrame>odom</odometryFrame>
+        <odometrySource>world</odometrySource>
+        <publishTf>1</publishTf>
+        <robotBaseFrame>chassis</robotBaseFrame>
+        <publishWheelTF>true</publishWheelTF>
+        <publishOdomTF>true</publishOdomTF>
+        <publishWheelJointState>true</publishWheelJointState>
+        <wheelAcceleration>0</wheelAcceleration>
+        <wheelTorque>5</wheelTorque>
+        <rosDebugLevel>na</rosDebugLevel>
+
+     </plugin>
+   </gazebo>
+
+   <!-- For Gazebo -->
+   <gazebo reference="hokuyo_link">
+       <sensor type="ray" name="head_hokuyo_sensor">
+           <pose>0 0 0 0 0 0</pose>
+           <visualize>true</visualize>
+           <update_rate>60</update_rate>
+           <ray>
+               <scan>
+               <horizontal>
+                   <samples>720</samples>
+                   <resolution>1</resolution>
+                   <min_angle>-0.785</min_angle>
+                   <max_angle>0.785</max_angle>
+               </horizontal>
+               </scan>
+               <range>
+                   <min>0.10</min>
+                   <max>5.0</max>
+                   <resolution>0.01</resolution>
+               </range>
+               <noise>
+                   <type>gaussian</type>
+                   <!-- Noise parameters based on published spec for Hokuyo laser
+                       achieving "+-30mm" accuracy at range < 10m.  A mean of 0.0m and
+                       stddev of 0.01m will put 99.7% of samples within 0.03m of the true
+                       reading. -->
+                   <mean>0.0</mean>
+                   <stddev>0.01</stddev>
+               </noise>
+           </ray>
+           <plugin name="laser" filename="libgazebo_ros_laser.so">
+               <topicName>/scan</topicName>
+               <frameName>hokuyo_link</frameName>
+           </plugin>
+       </sensor>
+   </gazebo>
+
+
+</robot>

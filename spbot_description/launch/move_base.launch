@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<launch>
+    <!-- Run the map server -->
+    <!-- <arg name = "map_path" default="$(find ros_whill)/config/maps/fake_map.yaml"/>
+    <param name="map_description" textfile="$(arg map_path)"/>
+    <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_path)"/> -->
+
+    <!-- <arg name="amcl"    default="false"/> -->
+
+    <!-- AMCL -->
+    <!-- <include if="$(arg amcl)" file="$(find ros_whill)/launch/amcl.launch"/> -->
+
+    <!-- <node pkg="tf" type="static_transform_publisher" name="map_2_odom" args="0 0 0 0 0 0 map odom 100"/> -->
+    <arg name="gazebo"  default="false"/>
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <!-- COST MAP -->
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find spbot_description)/config/move_base/costmap/global_costmap_params.yaml" command="load" />
+
+        <!-- BASE GLOBAL PLANNER -->
+	    <rosparam file="$(find spbot_description)/config/move_base/planners/global/navfn_planner.yaml" command="load" />
+	    <!-- BASE LOCAL PLANNER -->
+	    <rosparam file="$(find spbot_description)/config/move_base/planners/local/teb_local_planner.yaml" command="load" />
+	    <!-- RECOVERY -->
+        <rosparam file="$(find spbot_description)/config/move_base/planners/recovery_behaviors.yaml" command="load"/>
+
+        <param name="controller_frequency" value="5.0" />
+        <param name="controller_patience" value="15.0" />
+        <param name="max_planning_retries" value="10" />
+        <param name="oscillation_timeout" value="10.0" />
+        <param name="clearing_rotation_allowed" value="true" />
+
+        <remap if="$(arg gazebo)" from="cmd_vel" to="/cmd_vel"/>
+    </node>
+
+    <!--node pkg="ros_whill" type="move_base_waypoint_navigation" name="move_base_waypoint_navigation" output="screen"/-->
+</launch>
